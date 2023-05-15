@@ -24,20 +24,25 @@ import { TeamAction, TeamRequest } from "./model/Transactions/TeamRequest";
 import { Entity } from "./model/Entity";
 import { Employee } from "./model/Employee";
 import { Team } from "./model/Team";
+import {
+	LicenseAction,
+	LicenseRequest,
+} from "./model/Transactions/LicenseRequest";
 
-const req = new TeamRequest();
-const initiator = new Employee();
-initiator.id = "0";
-const receiver = new Employee();
-receiver.id = "1";
-const team = new Team();
-team.id = "2";
+// const req = new LicenseRequest();
+// const initiator = new Employee();
+// initiator.id = "0";
+// const receiver = new Employee();
+// receiver.id = "0";
 
-req.initiator = initiator;
-req.receiver = receiver;
-req.action = TeamAction.JOIN;
-req.team = team;
-Repo.addTeamRequest(req);
+// req.initiator = initiator;
+// req.receiver = receiver;
+// req.action = LicenseAction.REGISTER;
+// Repo.addLicenseRequest(req);
+
+// Repo.getRequests().then((e) => {
+// 	console.log(e);
+// });
 
 function MenuButton({
 	title,
@@ -72,7 +77,6 @@ function Layout() {
 		return <button onClick={() => signIn()}>sign in</button>;
 	}
 
-	Repo.getRequests();
 	return (
 		<div className="flex h-full">
 			{/* Side bar */}

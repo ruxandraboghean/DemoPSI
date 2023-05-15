@@ -15,6 +15,7 @@ import { Application } from "./model/Application";
 import { Team } from "./model/Team";
 import { Employee, JobLevel } from "./model/Employee";
 import { Project } from "./model/Project";
+import { LicenceType, License } from "./model/License";
 const firebaseConfig = {
 	apiKey: "AIzaSyAhsit-Ti2TbQ0Yy4NGBhXJ0aDTOhwkR9Y",
 	authDomain: "psidemo-55e06.firebaseapp.com",
@@ -60,6 +61,7 @@ namespace Database {
 		action: number;
 		status: number;
 		team?: string;
+		license?: string;
 	}
 	export interface Employee {
 		type: "Employee" | "Team";
@@ -75,6 +77,13 @@ namespace Database {
 		name: string;
 		manager: string;
 		project: string;
+	}
+	export interface License {
+		id: string;
+		key: string;
+		type: LicenceType;
+		application: string;
+		employee: string;
 	}
 }
 
@@ -107,6 +116,7 @@ export class Repo {
 			if (constructed instanceof TeamRequest) {
 				constructed.team = teams.find((team) => team.id == data.team)!;
 			}
+
 			constructed.id = id;
 			return constructed;
 		});
@@ -132,7 +142,7 @@ export class Repo {
 		const id = nanoid();
 		const requests: Record<string, Database.Request> = {};
 		const constructed: Database.Request = {
-			type: "Team",
+			type: "License",
 			action: request.action,
 			initiator: request.initiator.id,
 			receiver: request.receiver.id,
