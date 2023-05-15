@@ -1,7 +1,7 @@
 import { Vendor } from "./Vendor";
 
 export class Application {
-	private id: string;
-	private name: string;
+	public id: string;
+	public name: string;
 	public vendor: Vendor;
 }

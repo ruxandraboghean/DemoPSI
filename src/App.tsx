@@ -74,7 +74,17 @@ function Layout() {
 		return <>Loading...</>;
 	}
 	if (!auth.user) {
-		return <button onClick={() => signIn()}>sign in</button>;
+		return (
+			<div
+				onClick={() => signIn()}
+				className="flex w-full justify-center h-full items-center"
+			>
+				<div className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white px-16 py-6 rounded-md text-lg flex gap-4 flex-col justify-center items-center hover:scale-105 transition-all ">
+					<img src="/Group 2.png" className="h-6"></img>
+					Log in with Amazon
+				</div>
+			</div>
+		);
 	}
 
 	return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { Repo } from "../firebase";
+import { Application } from "../model/Application";
 import { Employee } from "../model/Employee";
 import {
 	LicenseAction,
@@ -20,15 +21,31 @@ function example() {
 		return <>Loading Requests</>;
 	}
 
+	const [employees, setEmployees] = useState<Employee[] | null>(null);
+	useEffect(() => {
+		Repo.getEmployees().then((e) => {
+			setEmployees(e);
+		});
+	}, []);
+	if (!employees) {
+		return <>Loading Employees</>;
+	}
+
+	const [applications, setApplications] = useState<Application[] | null>(null);
+	useEffect(() => {
+		Repo.getApplications().then((e) => {
+			setApplications(e);
+		});
+	}, []);
+	if (!applications) {
+		return <>Loading Employees</>;
+	}
+
 	// Exemplu creare request
 	const req = new LicenseRequest();
-	const initiator = new Employee();
-	initiator.id = "0";
-	const receiver = new Employee();
-	receiver.id = "0";
-
-	req.initiator = initiator;
-	req.receiver = receiver;
+	req.initiator = employees[0];
+	req.receiver = employees[0];
+	req.application = applications[0]
 	req.action = LicenseAction.REGISTER;
 	Repo.addLicenseRequest(req);
 

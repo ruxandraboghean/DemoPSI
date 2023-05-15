@@ -16,6 +16,7 @@ import { Team } from "./model/Team";
 import { Employee, JobLevel } from "./model/Employee";
 import { Project } from "./model/Project";
 import { LicenceType, License } from "./model/License";
+import { Vendor } from "./model/Vendor";
 const firebaseConfig = {
 	apiKey: "AIzaSyAhsit-Ti2TbQ0Yy4NGBhXJ0aDTOhwkR9Y",
 	authDomain: "psidemo-55e06.firebaseapp.com",
@@ -42,7 +43,21 @@ export async function signIn() {
 	const provider = new GoogleAuthProvider();
 	const authData = await signInWithPopup(auth, provider);
 
-	if (authData.user) useAuth.setState({ user: authData.user });
+	if (authData.user) {
+		useAuth.setState({ user: authData.user });
+		const employees = await Repo.getEmployees();
+		if (!employees.find((e) => e.email == authData.user.email)) {
+			const newEmployee = new Employee();
+			newEmployee.email = authData.user.email!;
+			newEmployee.firstName = authData.user.displayName!;
+			newEmployee.lastName = authData.user.displayName!;
+			newEmployee.phone = authData.user.phoneNumber!;
+			newEmployee.username = authData.user.displayName!;
+			newEmployee.jobLevel = 0;
+			newEmployee.id = nanoid();
+			Repo.addEmployee(newEmployee);
+		}
+	}
 }
 
 export function signOut() {
@@ -61,10 +76,10 @@ namespace Database {
 		action: number;
 		status: number;
 		team?: string;
+		application?: string;
 		license?: string;
 	}
 	export interface Employee {
-		type: "Employee" | "Team";
 		firstName: string;
 		lastName: string;
 		phone: string;
@@ -134,7 +149,7 @@ export class Repo {
 			status: request.action,
 			team: request.team.id,
 		};
-		requests["test"] = constructed;
+		requests[id] = constructed;
 		await setDoc(docRef, requests, { merge: true });
 	}
 	static async addLicenseRequest(request: LicenseRequest) {
@@ -147,9 +162,27 @@ export class Repo {
 			initiator: request.initiator.id,
 			receiver: request.receiver.id,
 			status: request.action,
+			application: request.application.id,
 		};
-		requests["test"] = constructed;
+		requests[id] = constructed;
 		await setDoc(docRef, requests, { merge: true });
+	}
+
+	static async addEmployee(employee: Employee) {
+		const docRef = doc(firestore, `app/employees`);
+		const id = nanoid();
+		const employees: Record<string, Database.Employee> = {};
+		const constructed: Database.Employee = {
+			email: employee.email,
+			firstName: employee.firstName,
+			jobLevel: employee.jobLevel,
+			lastName: employee.lastName,
+			phone: employee.phone,
+			team: "",
+			username: employee.username,
+		};
+		employees[id] = constructed;
+		await setDoc(docRef, employees, { merge: true });
 	}
 	static async getTeams(): Promise<Team[]> {
 		const docRef = doc(firestore, `app/teams`);
@@ -192,5 +225,19 @@ export class Repo {
 			return constructed;
 		});
 		return employees;
+	}
+
+	static async getApplications() {
+		// Mocked
+		const vendor1 = new Vendor();
+		vendor1.id = "0";
+		vendor1.name = "Nokia";
+
+		const app1 = new Application();
+		app1.vendor = vendor1;
+		app1.name = "InteliJ";
+		app1.id = "0";
+
+		return [app1];
 	}
 }

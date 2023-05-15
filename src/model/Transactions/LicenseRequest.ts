@@ -1,3 +1,4 @@
+import { Application } from "../Application";
 import { Request } from "./Request";
 
 export enum LicenseAction {
@@ -6,5 +7,6 @@ export enum LicenseAction {
 	PAUSE,
 }
 export class LicenseRequest extends Request {
+	application: Application;
 	action: LicenseAction;
 }
