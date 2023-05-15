@@ -3,14 +3,15 @@ import { Logo } from "./logo";
 import { Home } from "./pages/Home";
 import { Requests } from "./pages/Requests";
 import {
-	TbCalendar,
-	TbChartBar,
-	TbCircle,
-	TbFolder,
-	TbHome,
-	TbInbox,
-	TbUser,
-	TbUsers,
+  TbCalendar,
+  TbChartBar,
+  TbCircle,
+  TbFolder,
+  TbHome,
+  TbInbox,
+  TbLogout,
+  TbUser,
+  TbUsers,
 } from "react-icons/tb";
 import { IconType } from "react-icons";
 import { Employees } from "./pages/Employees";
@@ -18,59 +19,73 @@ import { Teams } from "./pages/Teams";
 import { Projects } from "./pages/Projects";
 import { Applications } from "./pages/Applications";
 import { Vendors } from "./pages/Vendors";
+import { signIn, signOut, useAuth } from "./firebase";
 
 function MenuButton({
-	title,
-	active,
-	icon,
+  title,
+  active,
+  icon,
 }: {
-	title: string;
-	active: boolean;
-	icon: JSX.Element;
+  title: string;
+  active: boolean;
+  icon: JSX.Element;
 }) {
-	const navigate = useNavigate();
-	return (
-		<div
-			onClick={() => {
-				navigate(title.toLowerCase());
-			}}
-			className="flex items-center gap-2 text-base text-white fill-white w-full hover:bg-gray-900 cursor-pointer px-4 py-2 rounded-md transition-all"
-		>
-			{icon}
-			{title}
-		</div>
-	);
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => {
+        navigate(title.toLowerCase());
+      }}
+      className="flex items-center gap-2 text-base text-white fill-white w-full hover:bg-gray-900 cursor-pointer px-4 py-2 rounded-md transition-all"
+    >
+      {icon}
+      {title}
+    </div>
+  );
 }
 
 function Layout() {
-	return (
-		<div className="flex h-full">
-			{/* Side bar */}
-			<div className="w-64 bg-gray-800 h-full flex flex-col items-center py-10 gap-8 px-2 shadow-md">
-				{/* Logo */}
-				<div className="flex flex-col items-center gap-4">
-					<Logo />
-					<div className="text-white font-bold">License Manager</div>
-				</div>
-				{/* Buttons */}
-				<div className="flex flex-col gap-2 w-full">
-					<MenuButton title="Dashboard" active icon={<TbHome />} />
-					<MenuButton title="Employees" active icon={<TbUser />} />
-					<MenuButton title="Teams" active icon={<TbUsers />} />
-					<MenuButton title="Projects" active icon={<TbFolder />} />
-					<MenuButton title="Vendors" active icon={<TbInbox />} />
-					<MenuButton
-						title="Applications"
-						active
-						icon={<TbCalendar />}
-					/>
-					<MenuButton title="Requests" active icon={<TbChartBar />} />
-				</div>
-			</div>
-			{/* Children */}
-			<Outlet />
-		</div>
-	);
+  const auth = useAuth();
+
+  if (auth.user == "loading") {
+    return <>Loading...</>;
+  }
+  if (!auth.user) {
+    return <button onClick={() => signIn()}>sign in</button>;
+  }
+
+  return (
+    <div className="flex h-full">
+      {/* Side bar */}
+      <div className="w-64 bg-gray-800 h-full flex flex-col items-center py-10 gap-8 px-2 shadow-md">
+        {/* Logo */}
+        <div className="flex flex-col items-center gap-4">
+          <Logo />
+          <div className="text-white font-bold">License Manager</div>
+        </div>
+        {/* Buttons */}
+        <div className="flex flex-col gap-2 w-full">
+          <MenuButton title="Dashboard" active icon={<TbHome />} />
+          <MenuButton title="Employees" active icon={<TbUser />} />
+          <MenuButton title="Teams" active icon={<TbUsers />} />
+          <MenuButton title="Projects" active icon={<TbFolder />} />
+          <MenuButton title="Vendors" active icon={<TbInbox />} />
+          <MenuButton title="Applications" active icon={<TbCalendar />} />
+          <MenuButton title="Requests" active icon={<TbChartBar />} />
+        </div>
+
+        <div
+          onClick={() => {}}
+          className="flex items-center gap-2 text-base text-white fill-white w-full hover:bg-gray-900 cursor-pointer px-4 py-2 rounded-md transition-all"
+        >
+          <TbLogout />
+          Sign Out
+        </div>
+      </div>
+      {/* Children */}
+      <Outlet />
+    </div>
+  );
 }
 
 function App() {
