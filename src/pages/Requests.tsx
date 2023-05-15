@@ -42,23 +42,24 @@ const usePage = create<{ currentPage: "feed" | "choose" | "team" | "license" }>(
 	})
 );
 
+// Individual
 export function Requests() {
 	const { currentPage } = usePage();
 
 	// Routing
 	switch (currentPage) {
 		case "feed":
-			return <RequestsFeed />;
+			return <RequestsFeedView />;
 		case "choose":
-			return <ChooseRequestType />;
+			return <ChooseRequestTypeView />;
 		case "team":
-			return <CreateTeamRequest />;
+			return <CreateTeamRequestView />;
 		case "license":
-			return <CreateLicenseRequest />;
+			return <CreateLicenseRequestView />;
 	}
 }
 
-export function RequestsFeed() {
+export function RequestsFeedView() {
 	return (
 		<button
 			onClick={() => {
@@ -70,14 +71,14 @@ export function RequestsFeed() {
 	);
 }
 
-export function ChooseRequestType() {
+export function ChooseRequestTypeView() {
 	return <div>Andreea</div>;
 }
 
-export function CreateLicenseRequest() {
+export function CreateLicenseRequestView() {
 	return <div>Cristi</div>;
 }
 
-export function CreateTeamRequest() {
+export function CreateTeamRequestView() {
 	return <div>Cristi</div>;
 }
