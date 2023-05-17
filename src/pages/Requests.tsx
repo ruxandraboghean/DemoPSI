@@ -230,7 +230,7 @@ export function RequestsFeedView() {
                   key={request.id}
                 >
                   <div className="flex-col text-base p-2">
-                    <h3 className="font-bold">Team Request</h3>
+                    <h3 className="font-bold">License Request</h3>
                     <div className="flex text-sm text-stone-500 items-center gap-4">
                       <p className="">
                         by {(request.initiator as Employee).firstName}
@@ -435,9 +435,7 @@ export function CreateLicenseRequestView() {
             </Listbox>
             <button
               type="button"
-              onClick={() => {
-                usePage.setState({ currentPage: "choose" });
-              }}
+              onClick={() => {}}
               className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600  w-36"
             >
               Add employee
@@ -503,9 +501,7 @@ export function CreateLicenseRequestView() {
             </Listbox>
             <button
               type="button"
-              onClick={() => {
-                usePage.setState({ currentPage: "choose" });
-              }}
+              onClick={() => {}}
               className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
             >
               Add Team
@@ -708,9 +704,7 @@ export function CreateTeamRequestView() {
             </Listbox>
             <button
               type="button"
-              onClick={() => {
-                usePage.setState({ currentPage: "choose" });
-              }}
+              onClick={() => {}}
               className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600  w-36"
             >
               Add employee
@@ -777,9 +771,7 @@ export function CreateTeamRequestView() {
 
             <button
               type="button"
-              onClick={() => {
-                usePage.setState({ currentPage: "choose" });
-              }}
+              onClick={() => {}}
               className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
             >
               Add application
