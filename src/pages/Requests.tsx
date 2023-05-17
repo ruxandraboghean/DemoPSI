@@ -89,7 +89,57 @@ export function RequestsFeedView() {
 }
 
 export function ChooseRequestTypeView() {
-	return <div>Andreea</div>;
+  return (
+    <div className="flex-col items-center p-10 w-full">
+      <div className="flex justify-between items-center">
+        <div className="pt-10 font-bold text-2xl">Requests</div>
+        <button
+          onClick={() => {
+            usePage.setState({ currentPage: "feed" });
+          }}
+          className=" w-28 h-10 m-10 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 "
+        >
+          Go back
+        </button>
+      </div>
+
+      <div className="font-bold text-2xl">
+        <div className=" flex z-10 mt-5 flex w-screen max-w-max px-4">
+          <div className="pl-36 flex h-100 grid grid-cols-2 gap-20 ">
+            <div className=" border border-gray-100 shadow-lg rounded-lg p-2 w-96 h-56 ">
+              <div className=" flex-col text-base p-2">
+                <h3 className=" font-bold pt-10 pl-2">Make a license request</h3>
+                <p className="font-normal text-sm pl-2">In order to make a license request, please press the button below.</p>
+                <button
+                  onClick={() => {
+                    usePage.setState({ currentPage: "license" });
+                  }}
+                  className="text-sky-700	text-sm hover:text-sky-500 pt-16 pl-2"
+                >
+                  Initiate a license request
+                </button>
+              </div>
+            </div>
+            <div className=" border border-gray-100 shadow-lg rounded-lg p-2 w-96 h-56">
+              <div className="flex-col text-base p-2">
+                <h3 className=" font-bold pt-10 pl-2">Make a team request</h3>
+                <p className="font-normal text-sm pl-2">In order to make a team request, please press the button below.</p>
+                <button
+                  onClick={() => {
+                    usePage.setState({ currentPage: "team" });
+                  }}
+                  className=" text-sky-700 text-sm hover:text-sky-500 pt-16 pl-2"
+                >
+                  Initiate a team request
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
 }
 
 export function CreateLicenseRequestView() {
