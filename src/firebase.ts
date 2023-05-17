@@ -113,6 +113,7 @@ export class Repo {
 
     const employees = await this.getEmployees();
     const teams = await this.getTeams();
+    const applications = await this.getApplications();
 
     const requests = Object.entries(
       docData.data() as Record<string, Database.Request>
@@ -135,7 +136,11 @@ export class Repo {
       if (constructed instanceof TeamRequest) {
         constructed.team = teams.find((team) => team.id == data.team)!;
       }
-
+      if (constructed instanceof LicenseRequest) {
+        constructed.application = applications.find(
+          (app) => app.id == data.application
+        )!;
+      }
       constructed.id = id;
       return constructed;
     });

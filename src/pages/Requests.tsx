@@ -13,7 +13,7 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import { TbCheck, TbChevronUp, TbList, TbUser } from "react-icons/tb";
 import { Listbox, Transition } from "@headlessui/react";
 import { Team } from "../model/Team";
-import { TeamAction } from "../model/Transactions/TeamRequest";
+import { TeamAction, TeamRequest } from "../model/Transactions/TeamRequest";
 
 function example() {
   // Exemplu returnare requesturi
@@ -52,7 +52,7 @@ function example() {
 
 const usePage = create<{ currentPage: "feed" | "choose" | "team" | "license" }>(
   () => ({
-    currentPage: "license",
+    currentPage: "feed",
   })
 );
 
@@ -80,28 +80,53 @@ const useTab = create<{
 }));
 
 export function RequestsFeedView() {
-  const [requests, setRequests] = useState<Request[] | null>(null);
+  const [requests, setRequests] = useState<
+    (TeamRequest | LicenseRequest)[] | null
+  >(null);
+
+  const [filteredRequests, setFilteredRequests] = useState<
+    (TeamRequest | LicenseRequest)[] | null
+  >(null);
   const { currentTab } = useTab();
 
   useEffect(() => {
     Repo.getRequests().then((e) => {
       setRequests(e);
+      console.log(e);
+      setFilteredRequests(
+        e.filter((request) => {
+          switch (currentTab) {
+            case "pending":
+              return request.status.toString() === "PENDING";
+            case "denied":
+              return request.status.toString() === "DENIED";
+            case "accepted":
+              return request.status.toString() === "ACCEPTED";
+            default:
+              return true;
+          }
+        })
+      );
     });
   }, []);
 
-  const filteredRequests = requests?.filter((request) => {
-    switch (currentTab) {
-      case "pending":
-        return request.status.toString() === "PENDING";
-      case "denied":
-        return request.status.toString() === "DENIED";
-      case "accepted":
-        return request.status.toString() === "ACCEPTED";
-      default:
-        return true;
-    }
-  });
-
+  useEffect(() => {
+    if (!requests) return;
+    setFilteredRequests(
+      requests.filter((request) => {
+        switch (currentTab) {
+          case "pending":
+            return request.status.toString() === "PENDING";
+          case "denied":
+            return request.status.toString() === "DENIED";
+          case "accepted":
+            return request.status.toString() === "ACCEPTED";
+          default:
+            return true;
+        }
+      })
+    );
+  }, [currentTab]);
   return (
     <div className="flex-col items-center p-10 w-full bg-gray-100">
       <div className="flex justify-between items-center">
@@ -166,28 +191,69 @@ export function RequestsFeedView() {
 
         <div className="flex-col box-border mt-5 ">
           {filteredRequests?.map((request) => {
-            return (
-              <div
-                className="flex border-2 p-2 justify-between items-center mb-3  bg-white shadow-sm rounded-md"
-                key={request.id}
-              >
-                <div className="flex-col text-base p-2">
-                  <h3 className="font-bold">Team Request</h3>
-                  <div className="flex text-sm text-stone-500 items-center gap-4">
-                    <p className="">by Ruxandra Boghean</p>
+            if (request instanceof TeamRequest)
+              return (
+                <div
+                  className="flex border-2 p-2 justify-between items-center mb-3  bg-white shadow-sm rounded-md"
+                  key={request.id}
+                >
+                  <div className="flex-col text-base p-2">
+                    <h3 className="font-bold">Team Request</h3>
+                    <div className="flex text-sm text-stone-500 items-center gap-4">
+                      <p className="">
+                        by {(request.initiator as Employee).firstName}
+                      </p>
 
-                    <div className="flex items-center gap-0.5">
-                      <AiOutlineInfoCircle className="" />
-                      <p>Transfer to Helis Team</p>
+                      <div className="flex items-center gap-0.5">
+                        <AiOutlineInfoCircle className="" />
+                        <p>Transfer to {request.team.name}</p>
+                      </div>
+                      <p className="">
+                        {request.status == 0
+                          ? "ACCEPTED"
+                          : request.status == 1
+                          ? "PENDING"
+                          : "DENIED"}{" "}
+                      </p>
                     </div>
-                    <p className="">{request.status} </p>
                   </div>
+                  <button className="text-sky-700	text-sm hover:text-sky-500 mr-5">
+                    View
+                  </button>
                 </div>
-                <button className="text-sky-700	text-sm hover:text-sky-500 mr-5">
-                  View
-                </button>
-              </div>
-            );
+              );
+
+            if (request instanceof LicenseRequest)
+              return (
+                <div
+                  className="flex border-2 p-2 justify-between items-center mb-3  bg-white shadow-sm rounded-md"
+                  key={request.id}
+                >
+                  <div className="flex-col text-base p-2">
+                    <h3 className="font-bold">Team Request</h3>
+                    <div className="flex text-sm text-stone-500 items-center gap-4">
+                      <p className="">
+                        by {(request.initiator as Employee).firstName}
+                      </p>
+
+                      <div className="flex items-center gap-0.5">
+                        <AiOutlineInfoCircle className="" />
+                        <p>Application {request.application.name}</p>
+                      </div>
+                      <p className="">
+                        {request.status == 0
+                          ? "ACCEPTED"
+                          : request.status == 1
+                          ? "PENDING"
+                          : "DENIED"}{" "}
+                      </p>
+                    </div>
+                  </div>
+                  <button className="text-sky-700	text-sm hover:text-sky-500 mr-5">
+                    View
+                  </button>
+                </div>
+              );
           })}
         </div>
       </div>
@@ -784,6 +850,13 @@ export function CreateTeamRequestView() {
           <button
             type="button"
             onClick={() => {
+              const licenseRequest = new LicenseRequest();
+              licenseRequest.application = selectedApp!;
+              licenseRequest.initiator = selected!;
+              licenseRequest.receiver = selectedApp!.vendor;
+              licenseRequest.action = LicenseAction.REVOKE;
+              licenseRequest.status = RequestStatus.PENDING;
+              Repo.addLicenseRequest(licenseRequest);
               usePage.setState({ currentPage: "feed" });
             }}
             className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
