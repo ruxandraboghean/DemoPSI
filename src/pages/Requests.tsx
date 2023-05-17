@@ -116,11 +116,11 @@ export function RequestsFeedView() {
       requests.filter((request) => {
         switch (currentTab) {
           case "pending":
-            return request.status.toString() === "PENDING";
+            return request.status == RequestStatus.PENDING;
           case "denied":
-            return request.status.toString() === "DENIED";
+            return request.status == RequestStatus.DENIED;
           case "accepted":
-            return request.status.toString() === "ACCEPTED";
+            return request.status == RequestStatus.ACCEPTED;
           default:
             return true;
         }
@@ -581,6 +581,13 @@ export function CreateLicenseRequestView() {
           <button
             type="button"
             onClick={() => {
+              const teamRequest = new TeamRequest();
+              teamRequest.team = selectedTeam!;
+              teamRequest.initiator = selected!;
+              teamRequest.receiver = selectedTeam?.manager!;
+              teamRequest.action = TeamAction.JOIN;
+              teamRequest.status = RequestStatus.PENDING;
+              Repo.addTeamRequest(teamRequest);
               usePage.setState({ currentPage: "feed" });
             }}
             className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
