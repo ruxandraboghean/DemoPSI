@@ -533,6 +533,9 @@ export function CreateTeamRequestView() {
 
   const [selected, setSelected] = useState<Employee | null>(null);
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
+  const [selectedAction, setSelectedAction] = useState<
+    "REGISTER" | "REVOKE" | "PAUSE"
+  >("REGISTER");
 
   useEffect(() => {
     Repo.getEmployees().then((e) => {
@@ -660,7 +663,7 @@ export function CreateTeamRequestView() {
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute mt-1 max-h-60 w-64 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-64 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                     {applications.map((person, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
@@ -698,6 +701,7 @@ export function CreateTeamRequestView() {
                 </Transition>
               </div>
             </Listbox>
+
             <button
               type="button"
               onClick={() => {
@@ -708,6 +712,84 @@ export function CreateTeamRequestView() {
               Add application
             </button>
           </div>
+          <div className="flex justify-between items-center text-gray-600">
+            <div className="font-semibold w-48">Action</div>
+            <Listbox value={selectedAction} onChange={setSelectedAction}>
+              <div className="relative w-64">
+                <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left focus:outline-none border-[1px] border-2 focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                  <span className="block truncate">{selectedAction}</span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <TbChevronUp
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Listbox.Button>
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Listbox.Options className="absolute z-50 mt-1 max-h-60 w-64 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {["REGISTER", "PAUSE", "REVOKE"].map(
+                      (person, personIdx) => (
+                        <Listbox.Option
+                          key={personIdx}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              active
+                                ? "bg-amber-100 text-amber-900"
+                                : "text-gray-900"
+                            }`
+                          }
+                          value={person}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? "font-medium" : "font-normal"
+                                }`}
+                              >
+                                {person}
+                              </span>
+                              {selected ? (
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                  <TbCheck
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      )
+                    )}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox>
+            <button
+              type="button"
+              onClick={() => {
+                usePage.setState({ currentPage: "choose" });
+              }}
+              className="invisible mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
+            >
+              Add Team
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              usePage.setState({ currentPage: "feed" });
+            }}
+            className="mr-0 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm float-right hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-36"
+          >
+            Add Request
+          </button>
         </div>
       </div>
     </div>
