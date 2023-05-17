@@ -2,10 +2,10 @@
 import { initializeApp } from "firebase/app";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import {
-	getAuth,
-	User,
-	GoogleAuthProvider,
-	signInWithPopup,
+  getAuth,
+  User,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { create } from "zustand";
 import { nanoid } from "nanoid";
@@ -201,6 +201,7 @@ export class Repo {
 
       const constructed = new Team();
       constructed.id = id;
+      constructed.name = data.name;
       constructed.manager = employees.find(
         (employee) => employee.id == data.manager
       )!;
